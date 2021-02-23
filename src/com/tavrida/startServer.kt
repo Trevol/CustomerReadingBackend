@@ -1,5 +1,7 @@
 package com.tavrida
 
+import com.tavrida.models.CustomerReading
+import com.tavrida.server.ServerApplication
 import io.ktor.application.*
 import io.ktor.client.*
 import io.ktor.client.engine.cio.*
@@ -12,39 +14,37 @@ import io.ktor.serialization.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
 import kotlinx.coroutines.runBlocking
-import kotlinx.serialization.Serializable
 
 fun main() {
-    val server = embeddedServer(Netty, port = 8080, module = Application::mymodule)
-        .apply { start(wait = false) }
+    ServerApplication(8080, wait = false).start().use{
+        /*val server = embeddedServer(Netty, port = 8080, module = Application::mymodule)
+            .apply { start(wait = false) }*/
 
-    runBlocking {
-        HttpClient(CIO) {
-            install(JsonFeature)
-        }.use { client ->
-            client.get<List<CustomerReading>>("http://localhost:8080/customerReading")
-                .apply {
-                    println(this)
-                }
+        runBlocking {
+            HttpClient(CIO) {
+                install(JsonFeature)
+            }.use { client ->
+                client.get<List<CustomerReading>>("http://localhost:8080/customerReading")
+                    .apply {
+                        println(this)
+                    }
 
-            client.get<CustomerReading>("http://localhost:8080/customerReading/123-456")
-                .apply {
-                    println(this)
-                }
+                client.get<CustomerReading>("http://localhost:8080/customerReading/123-456")
+                    .apply {
+                        println(this)
+                    }
 
-            client.get<String>("http://localhost:8080/")
-                .apply {
-                    println(this)
-                }
+                client.get<String>("http://localhost:8080/")
+                    .apply {
+                        println(this)
+                    }
+            }
         }
-
-        server.stop(1000, 1000)
     }
+
 }
 
-@Serializable
-data class CustomerReading(val customerId: String, val reading: Int)
-
+/*
 fun Application.mymodule() {
     install(ContentNegotiation) { json() }
     routing {
@@ -68,4 +68,4 @@ fun Application.mymodule() {
             }
         }
     }
-}
+}*/
