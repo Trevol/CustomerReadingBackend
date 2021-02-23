@@ -1,4 +1,4 @@
-package main.kotlin
+package com.tavrida
 
 import io.ktor.application.*
 import io.ktor.client.*
@@ -19,26 +19,25 @@ fun main() {
         .apply { start(wait = false) }
 
     runBlocking {
-        val client = HttpClient(CIO) {
+        HttpClient(CIO) {
             install(JsonFeature)
+        }.use { client ->
+            client.get<List<CustomerReading>>("http://localhost:8080/customerReading")
+                .apply {
+                    println(this)
+                }
+
+            client.get<CustomerReading>("http://localhost:8080/customerReading/123-456")
+                .apply {
+                    println(this)
+                }
+
+            client.get<String>("http://localhost:8080/")
+                .apply {
+                    println(this)
+                }
         }
 
-        client.get<List<CustomerReading>>("http://localhost:8080/customerReading")
-            .apply {
-                println(this)
-            }
-
-        client.get<CustomerReading>("http://localhost:8080/customerReading/123-456")
-            .apply {
-                println(this)
-            }
-
-        client.get<String>("http://localhost:8080/")
-            .apply {
-                println(this)
-            }
-
-        client.close()
         server.stop(1000, 1000)
     }
 }
