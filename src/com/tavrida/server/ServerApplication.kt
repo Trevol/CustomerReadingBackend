@@ -35,22 +35,24 @@ class ServerApplication(val port: Int, val wait: Boolean) : AutoCloseable {
                     call.respond("Root html!!!")
                 }
             }
-            route("/customerReading") {
-                get {
-                    call.respond(
-                        listOf(
-                            CustomerReading("1234", 12346),
-                            CustomerReading("12345", 1234446)
+            route("/api") {
+                route("/customerReading") {
+                    get {
+                        call.respond(
+                            listOf(
+                                CustomerReading("1234", 12346),
+                                CustomerReading("12345", 1234446)
+                            )
                         )
-                    )
-                }
-                get("{id}") {
-                    val id = call.parameters["id"] ?: "NULL"
-                    call.respond(CustomerReading(id, 1234678))
-                }
-                post {
-                    val reading = call.receive<CustomerReading>()
-                    call.respond(status = HttpStatusCode.Accepted, "Customer stored correctly")
+                    }
+                    get("{id}") {
+                        val id = call.parameters["id"] ?: "NULL"
+                        call.respond(CustomerReading(id, 1234678))
+                    }
+                    post {
+                        val reading = call.receive<CustomerReading>()
+                        call.respond(status = HttpStatusCode.Accepted, "Customer stored correctly")
+                    }
                 }
             }
         }

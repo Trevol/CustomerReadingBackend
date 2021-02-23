@@ -24,12 +24,12 @@ fun main() {
             HttpClient(CIO) {
                 install(JsonFeature)
             }.use { client ->
-                client.get<List<CustomerReading>>("http://localhost:8080/customerReading")
+                client.get<List<CustomerReading>>("http://localhost:8080/api/customerReading")
                     .apply {
                         println(this)
                     }
 
-                client.get<CustomerReading>("http://localhost:8080/customerReading/123-456")
+                client.get<CustomerReading>("http://localhost:8080/api/customerReading/123-456")
                     .apply {
                         println(this)
                     }

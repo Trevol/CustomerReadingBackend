@@ -1,5 +1,6 @@
 package test.kotlin
 
+/*
 import io.ktor.application.*
 import io.ktor.response.*
 import io.ktor.request.*
@@ -20,4 +21,4 @@ class FirstTest {
     fun ddd(){
 
     }
-}
+}*/
