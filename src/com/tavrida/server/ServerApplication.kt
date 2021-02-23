@@ -1,6 +1,7 @@
 package com.tavrida.server
 
 import com.tavrida.models.CustomerReading
+import com.tavrida.utils.log
 import io.ktor.application.*
 import io.ktor.features.*
 import io.ktor.http.*
@@ -51,6 +52,7 @@ class ServerApplication(val port: Int, val wait: Boolean) : AutoCloseable {
                     }
                     post {
                         val reading = call.receive<CustomerReading>()
+                        reading.log("FROM SERVER POST")
                         call.respond(status = HttpStatusCode.Accepted, "Customer stored correctly")
                     }
                 }

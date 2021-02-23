@@ -4,13 +4,46 @@ import com.tavrida.models.CustomerReading
 import io.ktor.client.*
 import io.ktor.client.engine.cio.*
 import io.ktor.client.features.json.*
+import io.ktor.client.features.json.serializer.*
+import io.ktor.client.request.*
+import io.ktor.http.*
 
-class CustomerReadingApiClient(val serverHost: String, val serverPort: Int, engineFactory: CIO = CIO) {
-    val httpClient = HttpClient(engineFactory) {
-        install(JsonFeature)
+class CustomerReadingApiClient(
+    private val serverHost: String,
+    private val serverPort: Int,
+    private val apiPath: String = "api/customerReading",
+    engineFactory: CIO = CIO
+) : AutoCloseable {
+
+    private val httpClient = HttpClient(engineFactory) {
+        install(JsonFeature) //{ serializer = KotlinxSerializer() }
     }
 
-    fun post(reading: CustomerReading) {
-        TODO()
+    suspend fun get(): List<CustomerReading> = httpClient.get(
+        host = serverHost,
+        port = serverPort,
+        path = apiPath
+    )
+
+
+    suspend fun get(customerId: String): CustomerReading = httpClient.get(
+        host = serverHost,
+        port = serverPort,
+        path = "$apiPath/$customerId"
+    )
+
+
+    suspend fun post(reading: CustomerReading): String = httpClient.post(
+        host = serverHost,
+        port = serverPort,
+        path = apiPath,
+        body = reading
+    ) {
+        contentType(ContentType.Application.Json)
+    }
+
+
+    override fun close() {
+        httpClient.close()
     }
 }
