@@ -13,7 +13,7 @@ fun main() {
             CustomerReadingApiClient("localhost", 8080, engineFactory = io.ktor.client.engine.cio.CIO).use { client ->
                 // client.get().log()
                 // client.get("123-456").log()
-                client.post(CustomerReading("88888", 1111))
+                client.post(CustomerReading(88888, 1111))
             }
         }
     }

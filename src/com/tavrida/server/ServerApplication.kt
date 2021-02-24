@@ -44,14 +44,14 @@ class ServerApplication<TEngine : ApplicationEngine, TConfiguration : Applicatio
                     get {
                         call.respond(
                             listOf(
-                                CustomerReading("1234", 12346),
-                                CustomerReading("12345", 1234446)
+                                CustomerReading(1234, 12346),
+                                CustomerReading(12345, 1234446)
                             )
                         )
                     }
                     get("{id}") {
                         val id = call.parameters["id"] ?: "NULL"
-                        call.respond(CustomerReading(id, 1234678))
+                        call.respond(CustomerReading(id.toInt(), 1234678))
                     }
                     post {
                         val reading = call.receive<CustomerReading>()
