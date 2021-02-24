@@ -12,6 +12,7 @@ import io.ktor.serialization.*
 import io.ktor.server.engine.*
 
 class ServerApplication<TEngine : ApplicationEngine, TConfiguration : ApplicationEngine.Configuration>(
+    val db: CustomerReadingDB,
     port: Int,
     val wait: Boolean,
     factory: ApplicationEngineFactory<TEngine, TConfiguration>
@@ -36,26 +37,18 @@ class ServerApplication<TEngine : ApplicationEngine, TConfiguration : Applicatio
         routing {
             route("/") {
                 get {
+                    // db.allReadingsWithCustomer()
                     call.respond("Root html!!!")
                 }
             }
             route("/api") {
                 route("/customerReading") {
                     get {
-                        call.respond(
-                            listOf(
-                                CustomerReading(1234, 12346),
-                                CustomerReading(12345, 1234446)
-                            )
-                        )
-                    }
-                    get("{id}") {
-                        val id = call.parameters["id"] ?: "NULL"
-                        call.respond(CustomerReading(id.toInt(), 1234678))
+                        call.respond(db.allReadings())
                     }
                     post {
                         val reading = call.receive<CustomerReading>()
-                        reading.log("FROM SERVER POST")
+                        db.save(reading)
                         call.respond(status = HttpStatusCode.Accepted, "Customer stored correctly")
                     }
                 }
