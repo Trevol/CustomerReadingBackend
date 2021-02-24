@@ -2,17 +2,16 @@ package com.tavrida.client
 
 import com.tavrida.models.CustomerReading
 import io.ktor.client.*
-import io.ktor.client.engine.cio.*
+import io.ktor.client.engine.*
 import io.ktor.client.features.json.*
-import io.ktor.client.features.json.serializer.*
 import io.ktor.client.request.*
 import io.ktor.http.*
 
-class CustomerReadingApiClient(
+class CustomerReadingApiClient<T : HttpClientEngineConfig>(
     private val serverHost: String,
     private val serverPort: Int,
     private val apiPath: String = "api/customerReading",
-    engineFactory: CIO = CIO
+    engineFactory: HttpClientEngineFactory<T>
 ) : AutoCloseable {
 
     private val httpClient = HttpClient(engineFactory) {

@@ -10,10 +10,13 @@ import io.ktor.response.*
 import io.ktor.routing.*
 import io.ktor.serialization.*
 import io.ktor.server.engine.*
-import io.ktor.server.netty.*
 
-class ServerApplication(val port: Int, val wait: Boolean) : AutoCloseable {
-    private val server = embeddedServer(Netty, port = port, module = { serverModule() })
+class ServerApplication<TEngine : ApplicationEngine, TConfiguration : ApplicationEngine.Configuration>(
+    port: Int,
+    val wait: Boolean,
+    factory: ApplicationEngineFactory<TEngine, TConfiguration>
+) : AutoCloseable {
+    private val server = embeddedServer(factory, port = port, module = { serverModule() })
 
     fun start() = this.also {
         server.start(wait)
