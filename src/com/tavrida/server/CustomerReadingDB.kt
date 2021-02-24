@@ -18,6 +18,8 @@ class CustomerReadingDB(dbFilesLocation: File) {
     }
 
     fun allReadingsWithCustomer(): List<Pair<CustomerReading, Customer>> {
+        val customers = jsonDB.findAllCustomers()
+        jsonDB.findAll(Customer::class.java)
         TODO()
         return listOf()
     }
@@ -28,5 +30,10 @@ class CustomerReadingDB(dbFilesLocation: File) {
 
     fun save(reading: CustomerReading) {
         TODO()
+    }
+
+    companion object {
+        fun JsonDBTemplate.findAllCustomers() = findAll(Customer::class.java)
+        fun JsonDBTemplate.findAllReadings() = findAll(CustomerReading::class.java)
     }
 }
