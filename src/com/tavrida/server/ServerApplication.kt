@@ -49,12 +49,8 @@ class ServerApplication<TEngine : ApplicationEngine, TConfiguration : Applicatio
                     }
                     post {
                         val reading = call.receive<CustomerReading>()
-                        if (reading.id==-2){
-                            throw Exception("TEST-ERROR")
-                        }
                         val id = db.save(reading)
                         call.respond(id)
-                        // call.respond(status = HttpStatusCode.Accepted, "Customer stored correctly")
                     }
                 }
             }
