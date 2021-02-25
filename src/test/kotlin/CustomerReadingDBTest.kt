@@ -9,9 +9,6 @@ import io.jsondb.annotation.Document
 import io.jsondb.annotation.Id
 import java.io.File
 
-class CustomerReadingDBTest {
-}
-
 fun main() {
     val dbFilesLocation = File("src/test/resources/CustomerReadingDBTest")
     dbFilesLocation.deleteRecursively()

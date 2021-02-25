@@ -10,6 +10,7 @@ import io.ktor.response.*
 import io.ktor.routing.*
 import io.ktor.serialization.*
 import io.ktor.server.engine.*
+import java.lang.Exception
 
 class ServerApplication<TEngine : ApplicationEngine, TConfiguration : ApplicationEngine.Configuration>(
     val db: CustomerReadingDB,
@@ -48,8 +49,12 @@ class ServerApplication<TEngine : ApplicationEngine, TConfiguration : Applicatio
                     }
                     post {
                         val reading = call.receive<CustomerReading>()
-                        db.save(reading)
-                        call.respond(status = HttpStatusCode.Accepted, "Customer stored correctly")
+                        if (reading.id==-2){
+                            throw Exception("TEST-ERROR")
+                        }
+                        val id = db.save(reading)
+                        call.respond(id)
+                        // call.respond(status = HttpStatusCode.Accepted, "Customer stored correctly")
                     }
                 }
             }

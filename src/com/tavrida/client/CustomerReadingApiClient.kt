@@ -32,7 +32,7 @@ class CustomerReadingApiClient<T : HttpClientEngineConfig>(
     )
 
 
-    suspend fun post(reading: CustomerReading): String = httpClient.post(
+    suspend fun post(reading: CustomerReading): Int = httpClient.post(
         host = serverHost,
         port = serverPort,
         path = apiPath,
