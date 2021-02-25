@@ -12,9 +12,7 @@ fun main() {
     // val serverHost = "192.168.195.131"
     runBlocking {
         CustomerReadingApiClient(serverHost, 8080, engineFactory = CIO).use { client ->
-            // client.get().log()
-            // client.get("123-456").log()
-            client.post(CustomerReading(88888, 1111))
+            client.post(CustomerReading(-1, 88888, 1111, System.currentTimeMillis()))
         }
     }
 }
