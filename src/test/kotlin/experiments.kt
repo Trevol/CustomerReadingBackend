@@ -1,8 +1,8 @@
 package test.kotlin
 
 import com.tavrida.utils.log
+import kotlin.random.Random
 
 fun main() {
-    assert (mapOf(1 to 11, 2 to 22)[1] == 11)
-    assert (mapOf(1 to 11, 2 to 22)[3] == null)
+    Random.nextInt(1, 3).log()
 }

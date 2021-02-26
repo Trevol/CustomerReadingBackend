@@ -1,16 +1,20 @@
 package com.tavrida.server
 
+import com.tavrida.models.Customer
 import com.tavrida.models.CustomerReading
-import com.tavrida.utils.log
+import com.tavrida.server.ServerApplication.Companion.formatter.formatAsDate
+import com.tavrida.utils.Timestamp
 import io.ktor.application.*
 import io.ktor.features.*
-import io.ktor.http.*
+import io.ktor.html.*
 import io.ktor.request.*
 import io.ktor.response.*
 import io.ktor.routing.*
 import io.ktor.serialization.*
 import io.ktor.server.engine.*
-import java.lang.Exception
+import kotlinx.html.*
+import java.text.SimpleDateFormat
+import java.util.*
 
 class ServerApplication<TEngine : ApplicationEngine, TConfiguration : ApplicationEngine.Configuration>(
     val db: CustomerReadingDB,
@@ -32,14 +36,88 @@ class ServerApplication<TEngine : ApplicationEngine, TConfiguration : Applicatio
         stop(1000, 1000)
     }
 
+    private companion object {
+        object formatter {
+            const val TIMESTAMP_FORMAT = "dd.MM.yyyy HH:mm"
+            val dateFormatter = SimpleDateFormat(TIMESTAMP_FORMAT, Locale.US)
+            fun Long.formatAsDate() = dateFormatter.format(this)
+        }
+
+        fun HTML.readingsView(readings: List<Pair<CustomerReading, Customer?>>) {
+            head {
+                title() {
+                    +"Показания"
+                }
+            }
+            body {
+                a(href = "/customers") { +"Потребители" }
+                table {
+                    thead {
+                        tr {
+                            th { +"Потребитель" }
+                            th { +"Показания" }
+                            th { +"Дата" }
+                        }
+                    }
+                    tbody {
+                        for ((reading, customer) in readings) {
+                            tr {
+                                td { +(customer?.name ?: "Не найден!") }
+                                td { +reading.reading.toString() }
+                                td { +reading.dateTime.formatAsDate() }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        fun HTML.customersView(customers: List<Customer>) {
+            body {
+                a(href = "/readings") { +"Показания" }
+                table {
+                    thead {
+                        tr {
+                            th { +"#" }
+                            th { +"Потребитель" }
+                        }
+                    }
+                    tbody {
+                        for (customer in customers) {
+                            tr {
+                                td { +customer.id.toString() }
+                                td { +customer.name }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     private fun Application.serverModule() {
         install(ContentNegotiation) { json() }
 
         routing {
             route("/") {
                 get {
-                    // db.allReadingsWithCustomer()
-                    call.respond("Root html!!!")
+                    call.respondHtml {
+                        readingsView(db.allReadingsWithCustomer())
+                    }
+                }
+            }
+            route("/readings") {
+                get {
+                    call.respondHtml {
+                        readingsView(db.allReadingsWithCustomer())
+                    }
+                }
+            }
+            route("/customers") {
+                get {
+                    call.respondHtml {
+                        customersView(db.allCustomers())
+                    }
                 }
             }
             route("/api") {

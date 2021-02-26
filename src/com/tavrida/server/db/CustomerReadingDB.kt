@@ -18,9 +18,13 @@ class CustomerReadingDB(dbFilesLocation: File) {
 
     fun allReadingsWithCustomer(): List<Pair<CustomerReading, Customer?>> {
         val customerRecs = jsonDb.findAllCustomers().toMap { it.id }
-        return jsonDb.findAllReadings().map { r ->
-            r.map() to customerRecs[r.customerId]?.map()
-        }
+        return jsonDb.findAllReadings()
+            .apply {
+                sortByDescending { it.dateTime }
+            }
+            .map { r ->
+                r.map() to customerRecs[r.customerId]?.map()
+            }
     }
 
     fun allReadings(): List<CustomerReading> {

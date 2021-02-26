@@ -1,0 +1,11 @@
+{"schemaVersion":"1.0"}
+{"id":1,"customerId":3,"reading":1000,"dateTime":1614349255044}
+{"id":2,"customerId":2,"reading":2000,"dateTime":1614345655048}
+{"id":3,"customerId":4,"reading":3000,"dateTime":1614342055049}
+{"id":4,"customerId":3,"reading":4000,"dateTime":1614338455050}
+{"id":5,"customerId":4,"reading":5000,"dateTime":1614334855051}
+{"id":6,"customerId":1,"reading":6000,"dateTime":1614331255053}
+{"id":7,"customerId":4,"reading":7000,"dateTime":1614327655054}
+{"id":8,"customerId":5,"reading":8000,"dateTime":1614324055055}
+{"id":9,"customerId":2,"reading":9000,"dateTime":1614320455056}
+{"id":10,"customerId":2,"reading":10000,"dateTime":1614316855057}
