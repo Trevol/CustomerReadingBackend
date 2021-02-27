@@ -39,8 +39,36 @@ class ServerApplication<TEngine : ApplicationEngine, TConfiguration : Applicatio
     private companion object {
         object formatter {
             const val TIMESTAMP_FORMAT = "dd.MM.yyyy HH:mm"
-            val dateFormatter = SimpleDateFormat(TIMESTAMP_FORMAT, Locale.US)
+            val dateFormatter = SimpleDateFormat(TIMESTAMP_FORMAT, Locale.ROOT)
             fun Long.formatAsDate() = dateFormatter.format(this)
+        }
+
+        fun <TItem> FlowContent.tableFor(
+            items: List<TItem>, requiredCol: Pair<String, TItem.() -> Any>,
+            vararg cols: Pair<String, TItem.() -> Any>
+        ) {
+            listOf(requiredCol, *cols)
+                .also { cols ->
+                    table {
+                        thead {
+                            tr {
+                                for ((colName) in cols) {
+                                    th { +colName }
+                                }
+                            }
+                        }
+                        tbody {
+                            for (item in items) {
+                                tr {
+                                    for ((_, value) in cols) {
+                                        td { +value(item).toString() }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
         }
 
         fun HTML.readingsView(readings: List<Pair<CustomerReading, Customer?>>) {
@@ -51,46 +79,22 @@ class ServerApplication<TEngine : ApplicationEngine, TConfiguration : Applicatio
             }
             body {
                 a(href = "/customers") { +"Потребители" }
-                table {
-                    thead {
-                        tr {
-                            th { +"Потребитель" }
-                            th { +"Показания" }
-                            th { +"Дата" }
-                        }
-                    }
-                    tbody {
-                        for ((reading, customer) in readings) {
-                            tr {
-                                td { +(customer?.name ?: "Не найден!") }
-                                td { +reading.reading.toString() }
-                                td { +reading.dateTime.formatAsDate() }
-                            }
-                        }
-                    }
-                }
+                tableFor(
+                    readings,
+                    "Потребитель" to { (second?.name ?: "Не найден!") },
+                    "Показания" to { first.reading },
+                    "Дата" to { first.dateTime.formatAsDate() }
+                )
             }
         }
 
         fun HTML.customersView(customers: List<Customer>) {
             body {
                 a(href = "/readings") { +"Показания" }
-                table {
-                    thead {
-                        tr {
-                            th { +"#" }
-                            th { +"Потребитель" }
-                        }
-                    }
-                    tbody {
-                        for (customer in customers) {
-                            tr {
-                                td { +customer.id.toString() }
-                                td { +customer.name }
-                            }
-                        }
-                    }
-                }
+                tableFor(customers,
+                    "#" to { id },
+                    "Потребитель" to { name }
+                )
             }
         }
     }
